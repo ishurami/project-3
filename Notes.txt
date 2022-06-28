@@ -1,0 +1,41 @@
+Requestor: Cardi
+Board: WEMOS D1 R1
+
+Vibration Sensor (SW420)
+VCC	5V
+GND	GND
+DO	GPIO 03
+
+IR Speed Sensor (LM393)
+VCC	5V
+GND	GND
+DO	GPIO 05
+
+Capacitor 104
+Left	GPIO 05 (DO pin of IR Speed)
+Right	GND (GND pin of IR Speed)
+
+Temperature Sensor (DHT11)
++	5V
+OUT	GPIO 04
+-	GND
+
+Vibration Buzzer
++	5V
+OUT	GPIO 14
+-	GND
+
+IR Speed Buzzer
++	5V
+OUT	GPIO 12
+-	GND
+
+Temperature Buzzer
++	5V
+OUT	GPIO 13
+-	GND
+
+Infos
+- Only GPIO 16 that cannot be implemented as interrupt pin.
+- Serial monitor show nothing when GPIO 01 become input pin.
+- While uploading program, plug out pin GPIO 03 for program to be uploaded.
