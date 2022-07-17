@@ -26,6 +26,38 @@ http://arduino.esp8266.com/stable/package_esp8266com_index.json
 | DO        | GPIO 05 / D15/SCL/D3  |
 
 ### Capacitor 104
+| Capacitor | Micro                 |
+| --------- | --------------------- |
+| Left      | GPIO 05 / D15/SCL/D3  |
+| Right     | GND of IR Speed       |
+
+### Temperature Sensor (DHT11)
+| DHT11     | Micro                 |
+| --------- | --------------------- |
+| +         | 5V                    |
+| OUT       | GPIO 04 / D14/SDA/D4  |
+| -         | GND                   |
+
+### Vibration Buzzer
+| Buzzer    | Micro                 |
+| --------- | --------------------- |
+| +         | 5V                    |
+| OUT       | GPIO 14 / D13/SCK/D5  |
+| -         | GND                   |
+
+### IR Speed Buzzer
+| Buzzer    | Micro                 |
+| --------- | --------------------- |
+| +         | 5V                    |
+| OUT       | GPIO 12 / D12/MISO/D6 |
+| -         | GND                   |
+
+### Temperature Buzzer
+| Buzzer    | Micro                 |
+| --------- | --------------------- |
+| +         | 5V                    |
+| OUT       | GPIO 13 / D11/MOSI/D7 |
+| -         | GND                   |
 
 ## Info
 - Only GPIO 16 that cannot be implemented as interrupt pin.
