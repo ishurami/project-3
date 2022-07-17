@@ -34,6 +34,7 @@ const int maxTemperature = 32;
 // Variable
 int vibrationVal = 0;
 float temperatureVal = 0;
+int holes = 2;
 int RPM = 0;
 int count = 0;
 String buzzerStatus = "";
@@ -119,7 +120,7 @@ void getSensorData() {
   }
 
   if ((current_time - previous_count_rpm) >= second(1)) {
-    RPM = count * 60;
+    RPM = count * 60 / holes;
     count = 0;
     previous_count_rpm = millis();
   }
