@@ -38,4 +38,4 @@ OUT	GPIO 13
 Infos
 - Only GPIO 16 that cannot be implemented as interrupt pin.
 - Serial monitor show nothing when GPIO 01 become input pin.
-- While uploading program, plug out pin GPIO 03 for program to be uploaded.
+- While uploading program, plug out pin GPIO 03 for program to be uploaded successfully.

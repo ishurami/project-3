@@ -3,8 +3,8 @@
 #include "DHT.h"
 
 // Thingspeak setup
-#define SECRET_SSID "skematology"  // Change this to your WIFI name
-#define SECRET_PASS "skematology"  // Change this to your WIFI password
+#define SECRET_SSID "Galaxy A12"  // Change this to your WIFI name
+#define SECRET_PASS "tes123123"  // Change this to your WIFI password
 #define SECRET_CH_ID 1345830
 #define SECRET_WRITE_APIKEY "0O6B77OMVMAC7SZL"
 unsigned long myChannelNumber = SECRET_CH_ID;
@@ -28,11 +28,13 @@ const int BUZZER_IR_PIN = 12;
 const int BUZZER_DHT_PIN = 13;
 
 // Set value
-const int maxRPM = 200;
+const int maxRPM = 500;
 const int maxTemperature = 32;
+unsigned long maxVibrationTime = 100000;  // in Microsecond
 
 // Variable
 int vibrationVal = 0;
+long vibrationLong = 0;
 float temperatureVal = 0;
 int holes = 2;
 int RPM = 0;
@@ -42,6 +44,7 @@ String buzzerStatus = "";
 // Variable time for millis
 unsigned long current_time = 0;
 unsigned long previous_count_rpm = 0;
+unsigned long previous_buzzer_vibration = 0;
 unsigned long previous_buzzer_ir = 0;
 unsigned long previous_buzzer_temperature = 0;
 unsigned long previous_send_thinkspeak = 0;
@@ -109,14 +112,19 @@ bool isSetupWifiSuccess() {
 
 void getSensorData() {
   buzzerStatus = "";
-  vibrationVal = digitalRead(VIBRATION_PIN);
+  vibrationLong = getVibrationTime();
   temperatureVal = dht.readTemperature();
   
-  if (vibrationVal) {
+  if (vibrationLong > maxVibrationTime) {
+    vibrationVal = 1;
     digitalWrite(BUZZER_VIBRATION_PIN, LOW);
     buzzerStatus += "Buzzer Vibration ON.\n";
+    previous_buzzer_vibration = millis();
   } else {
-    digitalWrite(BUZZER_VIBRATION_PIN, HIGH);
+    vibrationVal = 0;
+    if ((current_time - previous_buzzer_vibration) >= second(1)) {
+      digitalWrite(BUZZER_VIBRATION_PIN, HIGH); 
+    }
   }
 
   if ((current_time - previous_count_rpm) >= second(1)) {
@@ -126,7 +134,7 @@ void getSensorData() {
   }
   
   if (RPM > maxRPM) {
-    if ((current_time - previous_buzzer_ir) >= second(1)) {
+    if ((current_time - previous_buzzer_ir) >= second(0.5)) {
       digitalWrite(BUZZER_IR_PIN, !(digitalRead(BUZZER_IR_PIN)));
       previous_buzzer_ir = millis();
     }
@@ -147,20 +155,23 @@ void getSensorData() {
 }
 
 void serialPrint() {
+  Serial.print("vibrationLong: ");
+  Serial.print(vibrationLong);
+  Serial.print(" | vibrationVal: ");
   Serial.print(vibrationVal);
-  Serial.print(" - ");
+  Serial.print(" | RPM: ");
   Serial.print(RPM);
-  Serial.print(" - ");
+  Serial.print(" | temperatureVal: ");
   Serial.print(temperatureVal);
-  Serial.print(" - ");
+  Serial.print(" | buzzerStatus: ");
   Serial.print(buzzerStatus);
   Serial.println();
 }
 
 void sendSensorDataToThingspeak() {
   if ((current_time - previous_send_thinkspeak) >= second(15)) {
-    ThingSpeak.setField(1, vibrationVal);
-    ThingSpeak.setField(2, RPM);
+    ThingSpeak.setField(1, RPM);
+    ThingSpeak.setField(2, vibrationLong);
     ThingSpeak.setField(3, temperatureVal);
     ThingSpeak.setStatus(buzzerStatus);
   
@@ -174,5 +185,10 @@ void sendSensorDataToThingspeak() {
     
     previous_send_thinkspeak = millis();
   }
+}
+
+long getVibrationTime() {
+  long measurement = pulseIn(VIBRATION_PIN, HIGH);
+  return measurement;
 }
 
